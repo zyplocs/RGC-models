@@ -1,6 +1,7 @@
 from typing import Optional
 from rgc import MidgetRGC, ParasolRGC, BistratifiedRGC, RetinalGanglionCell
 
+
 def create_cell() -> Optional[RetinalGanglionCell]:
     cell_type: str = input("Enter the type of RGC (Midget, Parasol, Bistratified):\n").strip()
     receptive_field_size: float = float(input("Enter the receptive field size:\n").strip())
@@ -13,7 +14,8 @@ def create_cell() -> Optional[RetinalGanglionCell]:
         return BistratifiedRGC(receptive_field_size)
     else:
         print("Invalid cell type. Check spelling and try again.")
-        return None
+        create_cell()
+
 
 def interact_with_cell(cell: RetinalGanglionCell) -> None:
     print("\nCell Information:")
