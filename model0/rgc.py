@@ -11,7 +11,7 @@ class RetinalGanglionCell:
         self.cell_type: str = cell_type
         self.receptive_field_size: float = receptive_field_size
         self.response_characteristic: str = response_characteristic
-        self.spontaneous_firing_rate: float = 5.0
+        self.spontaneous_firing_rate: float = 5.0  # Ex. baseline firing rate
 
     def respond_to_light(self,
                          light_intensity: float,
@@ -19,14 +19,12 @@ class RetinalGanglionCell:
                          time_series: List[float]
                          ) -> str:
         raise NotImplementedError(
-            "This method should be overridden by subclasses"
-        )
+            "This method should be overridden by subclasses")
 
     def display_info(self) -> str:
         return (f"Type: {self.cell_type}, "
                 f"Receptive Field Size: {self.receptive_field_size}, "
-                f"Response Characteristic: {self.response_characteristic}"
-                )
+                f"Response Characteristic: {self.response_characteristic}")
 
 
 class MidgetRGC(RetinalGanglionCell):
@@ -35,8 +33,7 @@ class MidgetRGC(RetinalGanglionCell):
                  ) -> None:
         super().__init__('Midget',
                          receptive_field_size,
-                         'High spatial resolution, color sensitive'
-                         )
+                         'High spatial resolution, color sensitive')
 
     def respond_to_light(self,
                          light_intensity: float,
@@ -48,13 +45,16 @@ class MidgetRGC(RetinalGanglionCell):
         center_response: float = center_weight * light_intensity
         surround_response: float = surround_weight * surround_intensity
         net_response: float = self.spontaneous_firing_rate + center_response + surround_response
-        return f"Midget RGC net reponse: {net_response}, Temporal response: {self.temporal_response(time_series)}"
+        return f"Midget RGC net reponse: {net_response:.2f} (spikes/s), Temporal response: {self.temporal_response(time_series):.2f} (spikes/s)"
 
     def temporal_response(self,
                           time_series: List[float]
                           ) -> float:
+        if not time_series:
+            return 0.0
+        kernel: np.ndarray = np.ones(10) / 10  # Simple moving average
         response: np.ndarray = np.convolve(time_series,
-                                           np.ones(10)/10,
+                                           kernel,
                                            mode='valid'
                                            )
         return float(response[-1]) if response.size > 0 else 0.0
@@ -95,8 +95,7 @@ class BistratifiedRGC(RetinalGanglionCell):
                  ) -> None:
         super().__init__('Bistratified',
                          receptive_field_size,
-                         'Moderate spatial resolution, blue-yellow color contrast'
-                         )
+                         'Moderate spatial resolution, blue-yellow color contrast')
 
     def respond_to_light(self,
                          light_intensity: float,
