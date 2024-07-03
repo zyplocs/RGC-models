@@ -64,7 +64,9 @@ class ParasolRGC(RetinalGanglionCell):
     def __init__(self,
                  receptive_field_size: float
                  ) -> None:
-        super().__init__('Parasol', receptive_field_size, 'High temporal resolution, luminance sensitive')
+        super().__init__('Parasol',
+                         receptive_field_size,
+                         'High temporal resolution, luminance sensitive')
 
     def respond_to_light(self,
                          light_intensity: float,
@@ -76,14 +78,16 @@ class ParasolRGC(RetinalGanglionCell):
         center_response: float = center_weight * light_intensity
         surround_response: float = surround_weight * surround_intensity
         net_response: float = self.spontaneous_firing_rate + center_response + surround_response
-        return f"Parasol RGC net response: {net_response}, Temporal response: {self.temporal_response(time_series)}"
+        return f"Parasol RGC net response: {net_response:.2f} (spikes/s), Temporal response: {self.temporal_response(time_series):.2f} (spikes/s)"
 
     def temporal_response(self,
                           time_series: List[float]
                           ) -> float:
-        # Example temporal response function
+        if not time_series:
+            return 0.0
+        kernel: np.ndarray = np.exp(-np.arange(10) / 10)  # Exponential decay
         response: np.ndarray = np.convolve(time_series,
-                                           np.exp(-np.arange(10)/10),
+                                           kernel,
                                            mode='valid'
                                            )
         return float(response[-1]) if response.size > 0 else 0.0
@@ -107,13 +111,16 @@ class BistratifiedRGC(RetinalGanglionCell):
         center_response: float = center_weight * light_intensity
         surround_response: float = surround_weight * surround_intensity
         net_response: float = self.spontaneous_firing_rate + center_response + surround_response
-        return f"Bistratified RGC net response: {net_response}, Temporal response: {self.temporal_response(time_series)}"
+        return f"Bistratified RGC net response: {net_response:.2f} (spikes/s), Temporal response: {self.temporal_response(time_series):.2f} (spikes/s)"
 
     def temporal_response(self,
                           time_series: List[float]
                           ) -> float:
-        # Example temporal response function
+        if not time_series:
+            return 0.0
+        kernel: np.ndarray = np.cos(np.linspace(0, np.pi, 10))
+        kernel = np.abs(kernel)
         response: np.ndarray = np.convolve(time_series,
-                                           np.cos(np.linspace(0, np.pi, 10)),
+                                           kernel,
                                            mode='valid')
         return float(response[-1]) if response.size > 0 else 0.0

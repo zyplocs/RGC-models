@@ -37,4 +37,4 @@ class ParasolCell(RetinalGanglionCell):
 
 class BistratifiedCell(RetinalGanglionCell):
     def __init__(self, location):
-        super()__init__('bistratified', 1.5, location)
+        super().__init__('bistratified', 1.5, location)
