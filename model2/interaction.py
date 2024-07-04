@@ -3,7 +3,7 @@ from rgc import MidgetCell, ParasolCell, BistratifiedCell
 
 def get_user_input():
     cell_type = input(
-        "Enter cell type (midget/parasol/bistratified): ").strip.lower()
+        "Enter cell type (midget/parasol/bistratified): ").strip().lower()
     location_x = float(input("Enter x location ").strip())
     location_y = float(input("Enter y location ").strip())
     stimulus_intensity = float(input("Enter stimulus intensity :").strip())
