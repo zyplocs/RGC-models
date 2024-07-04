@@ -1,7 +1,7 @@
 # `RGC-models` 👁️‍🗨️
 
 ## What?
-`RGC-models` is my repository for building and experimenting with elementary models of retinal ganglion cell activation. These models are presently superficial and do not aim to reflect the complexity of the human visual system.
+This is my repository for building and experimenting with elementary models of retinal ganglion cell activation. These models are presently superficial and do not aim to reflect the complexity of the human visual system.
 
 ### `model0`
 First iteration of RGC simulator. This approach implements a convolution of an input stimuli and a basic cell response while factoring in center-surround characteristics.
