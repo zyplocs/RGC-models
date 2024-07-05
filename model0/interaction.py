@@ -1,5 +1,11 @@
 from typing import Optional
-from rgc import MidgetRGC, ParasolRGC, BistratifiedRGC, RetinalGanglionCell
+from rgc import (
+    MidgetRGC,
+    ParasolRGC,
+    BistratifiedRGC,
+    SmallBistratifiedRGC,
+    RetinalGanglionCell,
+)
 
 
 def create_cell() -> Optional[RetinalGanglionCell]:
@@ -15,9 +21,12 @@ def create_cell() -> Optional[RetinalGanglionCell]:
     print("  - Midget: High spatial resolution, color sensitive")
     print("  - Parasol: High temporal resolution, luminance sensitive")
     print("  - Bistratified: Moderate spatial resolution, blue-yellow color contrast")
+    print(
+        "  - Small Bistratified: Moderate-low spatial resolution, blue-yellow color contrast"
+    )
 
     cell_type: str = input(
-        "Enter the type of RGC ('Midget', 'Parasol', or 'Bistratified'):\n"
+        "Enter the type of RGC ('Midget', 'Parasol', 'Bistratified', or 'Small Bistratified'):\n"
     ).strip()
     receptive_field_size: float = float(
         input("Enter the receptive field size (in degrees of visual angle):\n").strip()
@@ -29,6 +38,8 @@ def create_cell() -> Optional[RetinalGanglionCell]:
         return ParasolRGC(receptive_field_size)
     elif cell_type.lower() == "bistratified":
         return BistratifiedRGC(receptive_field_size)
+    elif cell_type.lower() == "small bistratified":
+        return SmallBistratifiedRGC(receptive_field_size)
     else:
         print("Invalid cell type. Check spelling and try again.")
         return create_cell
@@ -37,31 +48,23 @@ def create_cell() -> Optional[RetinalGanglionCell]:
 def interact_with_cell(cell: RetinalGanglionCell) -> None:
     print(
         """
-    ------------------
-     CELL INFORMATION
-    ------------------
+         ------------------
+          CELL INFORMATION
+         ------------------
     """
     )
     print(cell.display_info())
 
     print(
         """
-    * You can now input light intensities to see how the cell responds.
-    """
-    )
-    print(
-        """
-    * Please enter the light intensity at the center and the surrounding area of the receptive field.
-    """
-    )
-    print(
-        """
-    * You will see the net response of the cell in spikes per second, as well as the temporal response which reflects how the response changes over time.
-    """
-    )
-    print(
-        """
-    ** You can type 'back' to select another cell or 'exit' to quit the simulation.
+    * You can now input light intensities to see how the cell responds.\n
+    * Please enter the light intensity at the center and the surrounding\n
+        area of the receptive field.\n
+    * You will see the net response of the cell in spikes per second,\n
+        as well as the temporal response which reflects how the response\n
+        changes over time.\n
+    $ You can type 'back' to select another cell\n
+        or 'exit' to quit the simulation.
     """
     )
 
@@ -69,7 +72,7 @@ def interact_with_cell(cell: RetinalGanglionCell) -> None:
 
     while True:
         light_intensity: str = input(
-            "\nEnter center light intensity (in cd/m²) (or 'back' to select another cell, 'exit' to quit): "
+            "\nEnter center light intensity (in cd/m²): "
         ).strip()
         if light_intensity.lower() == "exit":
             return "exit"
