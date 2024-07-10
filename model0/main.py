@@ -24,9 +24,15 @@ class RGCApp:
         self.create_widgets()
 
     def create_widgets(self):
-        ttk.Label(self.root, text="Select RGC Type:").grid(
-            column=0, row=0, padx=10, pady=10
-        )
+        self.root.configure(bg="gray")
+
+        # Labels
+        self.create_label(self.root, "Select RGC Type:", 0, 0)
+        self.create_label(self.root, "Receptive Field Size (degrees):", 0, 1)
+        self.create_label(self.root, "Center Light Intensity (cd/m²):", 0, 4)
+        self.create_label(self.root, "Surround Light Intensity (cd/m²):", 0, 5)
+
+        # Combobox
         cell_type_menu = ttk.Combobox(self.root, textvariable=self.cell_type_var)
         cell_type_menu["values"] = (
             "Parasol",
@@ -35,41 +41,35 @@ class RGCApp:
             "Small Bistratified",
         )
         cell_type_menu.grid(column=1, row=0, padx=10, pady=10)
+        cell_type_menu.configure(background="white")
 
-        ttk.Label(self.root, text="Receptive Field Size (degrees):").grid(
-            column=0, row=1, padx=10, pady=10
-        )
-        ttk.Entry(self.root, textvariable=self.receptive_field_size_var).grid(
-            column=1, row=1, padx=10, pady=10
-        )
+        # Entry Fields
+        self.create_entry(self.root, self.receptive_field_size_var, 1, 1)
+        self.create_entry(self.root, self.center_intensity_var, 1, 4)
+        self.create_entry(self.root, self.surround_intensity_var, 1, 5)
 
-        ttk.Button(self.root, text="Create Cell", command=self.create_cell).grid(
-            column=0, row=2, columnspan=2, pady=10
-        )
+        # Buttons
+        self.create_button(self.root, "Create Cell", self.create_cell, 0, 2)
+        self.create_button(self.root, "Get Response", self.get_response, 0, 6)
 
-        self.info_label = ttk.Label(self.root, text="")
-        self.info_label.grid(column=0, row=3, columnspan=2, pady=10)
+        # Info and Response Labels
+        self.info_label = self.create_label(self.root, "", 0, 3, colspan=2)
+        self.response_label = self.create_label(self.root, "", 0, 7, colspan=2)
 
-        ttk.Label(self.root, text="Center Light Intensity (cd/m²):").grid(
-            column=0, row=4, padx=10, pady=10
-        )
-        ttk.Entry(self.root, textvariable=self.center_intensity_var).grid(
-            column=1, row=4, padx=10, pady=10
-        )
+    def create_label(self, parent, text, col, row, colspan=1):
+        label = tk.Label(parent, text=text, bg="white", fg="black")
+        label.grid(column=col, row=row, columnspan=colspan, padx=10, pady=10)
+        return label
 
-        ttk.Label(self.root, text="Surround Light Intensity (cd/m²):").grid(
-            column=0, row=5, padx=10, pady=10
-        )
-        ttk.Entry(self.root, textvariable=self.surround_intensity_var).grid(
-            column=1, row=5, padx=10, pady=10
-        )
+    def create_entry(self, parent, textvariable, col, row):
+        entry = ttk.Entry(parent, textvariable=textvariable)
+        entry.grid(column=col, row=row, padx=10, pady=10)
+        return entry
 
-        ttk.Button(self.root, text="Get Response", command=self.get_response).grid(
-            column=0, row=6, columnspan=2, pady=10
-        )
-
-        self.response_label = ttk.Label(self.root, text="")
-        self.response_label.grid(column=0, row=7, columnspan=2, pady=10)
+    def create_button(self, parent, text, command, col, row):
+        button = ttk.Button(parent, text=text, command=command)
+        button.grid(column=col, row=row, columnspan=2, pady=10)
+        return button
 
     def create_cell(self):
         cell_type = self.cell_type_var.get()
@@ -90,7 +90,7 @@ class RGCApp:
         center_intensity = self.center_intensity_var.get()
         surround_intensity = self.surround_intensity_var.get()
         self.time_series.append(center_intensity)
-        if len(self.time_series) > 10:  # Keep the time series to a fixed length
+        if len(self.time_series) > 10:  # Keep the time series to fixed length
             self.time_series.pop(0)
         response = self.cell.respond_to_light(
             center_intensity, surround_intensity, self.time_series
@@ -114,10 +114,9 @@ if __name__ == "__main__":
             else:
                 print("Failed to create cell. Exiting.")
             break
-        elif mode == "gui":
+        if mode == "gui":
             root = tk.Tk()
             app = RGCApp(root)
             root.mainloop()
             break
-        else:
-            print("Invalid mode. Please enter 'text' or 'gui'.")
+        print("Invalid mode. Please enter 'text' or 'gui'.")
